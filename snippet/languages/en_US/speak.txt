@@ -1,2 +1,6 @@
 snippet: Snippet
 snippets: Snippets
+
+widget:
+  recent_snippet: Recent Snippet
+  recent_snippets: Recent Snippets

@@ -1,2 +1,6 @@
 snippet: Potongan
 snippets: Potongan
+
+widget:
+  recent_snippet: Potongan Terbaru
+  recent_snippets: Potongan Terbaru
