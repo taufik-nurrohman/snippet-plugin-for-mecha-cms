@@ -1,0 +1,42 @@
+Title: Potongan
+Author: Taufik Nurrohman
+URL: http://latitudu.com
+Version: 1.0.0
+
+====
+
+> Simpan dan muat berkas-berkas potongan Anda dengan plugin ini.
+
+Plugin ini memungkinkan Anda untuk memuat berkas-berkas teks ke dalam halaman dan menganggap mereka sebagai bagian dari halaman tersebut.
+
+### Penggunaan
+
+#### Berkas Teks
+
+Kode pintasan ini akan memuat berkas `lot\assets\__snippet\txt\foo.txt` ke dalam halaman:
+
+~~~ .no-highlight
+`{{print:foo}}`
+~~~
+
+Kode pintasan ini akan memuat berkas `lot\assets\__snippet\txt\foo.txt` ke dalam halaman kemudian akan mengubah _wildcard_ `%1$s` menjadi `bar` dan `%2$s` menjadi `baz`:
+
+~~~ .no-highlight
+`{{print path="foo" lot="bar,baz"}}`
+~~~
+
+#### Berkas PHP
+
+Kode pintasan ini akan memuat berkas `lot\assets\__snippet\php\foo.php` ke dalam halaman:
+
+~~~ .no-highlight
+`{{include:foo}}`
+~~~
+
+Kode pintasan ini akan memuat berkas `lot\assets\__snippet\php\foo.php` ke dalam halaman dan akan menanamkan variabel `$lot` dengan nilai berupa `array('bar', 'baz')` dan `$foo` dengan nilai berupa `1`:
+
+~~~ .no-highlight
+`{{include path="lorem-ipsum" lot="bar,baz" foo="1"}}`
+~~~
+
+<!-- block:donate -->

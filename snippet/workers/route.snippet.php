@@ -14,14 +14,18 @@ Route::accept($config->manager->slug . '/snippet', function() use($config, $spea
 
 Route::post($config->manager->slug . '/snippet/ignite', function() use($config, $speak) {
     $request = Request::post();
+    $id = time();
     Guardian::checkToken($request['token']);
     if(trim($request['name']) === "") {
-        $request['name'] = time() . '.txt'; // empty file name
+        $request['name'] = $id . '.txt'; // empty file name
     }
-    $_path = Text::parse($request['name'], '->safe_path_name');
-    $_path_ = File::path($_path);
+    $_path = Text::parse(sprintf($request['name'], $id), '->safe_path_name');
     $e = File::E($_path, false);
-    if($e !== 'txt' && $e !== 'php') $e = 'txt';
+    if($e !== 'txt' && $e !== 'php') {
+        $e = 'txt';
+        $_path .= '.txt';
+    }
+    $_path_ = File::path($_path);
     $file = ASSET . DS . '__snippet' . DS . $e . DS . $_path;
     if(File::exist($file)) { // file already exists
         Notify::error(Config::speak('notify_file_exist', '<code>' . $_path_ . '</code>'));
@@ -30,12 +34,12 @@ Route::post($config->manager->slug . '/snippet/ignite', function() use($config, 
         Notify::error($speak->notify_error_content_empty);
     }
     if( ! Notify::errors()) {
-        $recent = array_slice(File::open(CACHE . DS . 'snippets.recent.cache')->unserialize(), 0, $config->per_page);
-        File::serialize(array_merge(array($_path), $recent))->saveTo(CACHE . DS . 'snippets.recent.cache', 0600);
+        $recent = array_slice(File::open(CACHE . DS . 'snippets.cache')->unserialize(), 0, $config->per_page);
+        File::serialize(array_merge(array($_path), $recent))->saveTo(CACHE . DS . 'snippets.cache', 0600);
         $url = $config->manager->slug . '/asset/repair/file:__snippet/' . $e . '/' . File::url($_path) . '?path=' . urlencode(rtrim('__snippet/' . $e . '/' . File::D(File::url($_path)), '/'));
         File::write($request['content'])->saveTo($file, 0600);
         Notify::success(Config::speak('notify_file_created', '<code>' . $_path_ . '</code>' . ( ! isset($request['redirect']) ? ' <a class="pull-right" href="' . $config->url . '/' . $url . '" target="_blank">' . Jot::icon('pencil') . ' ' . $speak->edit . '</a>' : "")));
-        Notify::info($speak->shortcode . ' &rarr; <code>{{' . ($e === 'php' ? 'include' : 'print') . ':' . str_replace('.' . $e, "", File::url($_path)) . '}}</code>');
+        Notify::info('<strong>' . $speak->shortcode . ':</strong> <code>{{' . ($e === 'php' ? 'include' : 'print') . ':' . str_replace('.' . $e, "", File::url($_path)) . '}}</code>');
         Guardian::kick(isset($request['redirect']) ? $url : File::D($config->url_current));
     }
     Guardian::kick(File::D($config->url_current));

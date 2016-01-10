@@ -3,7 +3,7 @@
   <div class="tab-button-area">
     <?php Weapon::fire('tab_button_before', $hooks); ?>
     <a class="tab-button active" href="#tab-content-1"><?php echo Jot::icon('pencil', 'fw') . ' ' . $speak->new; ?></a>
-    <a class="tab-button" href="#tab-content-2"><?php echo Jot::icon('clock-o', 'fw') . ' ' . $speak->widget->recent_snippets; ?></a>
+    <a class="tab-button" href="#tab-content-2"><?php echo Jot::icon('puzzle-piece', 'fw') . ' ' . $speak->widget->recent_snippets; ?></a>
     <?php Weapon::fire('tab_button_after', $hooks); ?>
   </div>
   <?php echo $messages; ?>

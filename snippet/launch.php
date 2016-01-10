@@ -8,7 +8,7 @@ Config::merge('manager_menu', array(
     )
 ));
 
-function do_load_snippet($content) {
+function do_snippet($content) {
     global $config, $speak;
     if(strpos($content, '{{') === false) return $content;
     // Plain text => `{{print:foo}}`
@@ -16,8 +16,11 @@ function do_load_snippet($content) {
         $content = preg_replace_callback('#(?<!`)\{\{print[:=](.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
             $e = File::E($matches[1], false);
-            if($e !== 'txt' && $e !== 'php') $e = 'txt';
-            if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $matches[1] . '.' . $e)) {
+            if($e !== 'txt' && $e !== 'php') {
+                $e = 'txt';
+                $matches[1] .= '.txt';
+            }
+            if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $matches[1])) {
                 return File::open($snippet)->read();
             }
             return $content;
@@ -28,20 +31,24 @@ function do_load_snippet($content) {
         $content = preg_replace_callback('#(?<!`)\{\{print\s+(.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
             $data = Converter::attr($content, array('{{', '}}', ' '), array('"', '"', '='));
-            if( ! isset($data['attributes']['path'])) {
+            $attr = (array) $data['attributes'];
+            if( ! isset($attr['path'])) {
                 return $matches[0];
             }
-            $e = File::E($data['attributes']['path'], false);
-            if($e !== 'txt' && $e !== 'php') $e = 'txt';
-            if( ! $snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $data['attributes']['path'] . '.' . $e)) {
+            $e = File::E($attr['path'], false);
+            if($e !== 'txt' && $e !== 'php') {
+                $e = 'txt';
+                $attr['path'] .= '.txt';
+            }
+            if( ! $snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $attr['path'])) {
                 return $matches[0];
             }
             $content = File::open($snippet)->read();
-            if(isset($data['attributes']['lot'])) {
-                $attr = Mecha::walk(explode(',', $data['attributes']['lot']), function($v) {
+            if(isset($attr['lot'])) {
+                $lot = Mecha::walk(explode(',', $attr['lot']), function($v) {
                     return str_replace('&#44;', ',', $v);
                 });
-                $content = vsprintf($content, $attr);
+                $content = vsprintf($content, $lot);
             }
             return $content;
         }, $content);
@@ -51,32 +58,45 @@ function do_load_snippet($content) {
         $content = preg_replace_callback('#(?<!`)\{\{include[:=](.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
             $e = File::E($matches[1], false);
-            if($e !== 'php') $e = 'php';
-            if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $matches[1] . '.' . $e)) {
-                $content = include $snippet;
+            if($e !== 'php') {
+                $e = 'php';
+                $matches[1] .= '.php';
+            }
+            if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $matches[1])) {
+                ob_start();
+                include $snippet;
+                $content = ob_get_clean();
             }
             return $content;
         }, $content);
     }
-    // Executable code with wildcard(s) => `{{include path="foo" lot="bar,baz,qux"}}`
+    // Executable code with variable(s) => `{{include path="foo" lot="bar,baz,qux" another_var="1"}}`
     if(strpos($content, '{{include ') !== false) {
         $content = preg_replace_callback('#(?<!`)\{\{include\s+(.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
             $data = Converter::attr($content, array('{{', '}}', ' '), array('"', '"', '='));
-            if( ! isset($data['attributes']['path'])) {
+            $attr = (array) $data['attributes'];
+            if( ! isset($attr['path'])) {
                 return $matches[0];
             }
-            $e = File::E($data['attributes']['path'], false);
-            if($e !== 'php') $e = 'php';
-            if( ! $snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $data['attributes']['path'] . '.' . $e)) {
-                return $matches[0];
+            $e = File::E($attr['path'], false);
+            if($e !== 'php') {
+                $e = 'php';
+                $attr['path'] .= '.php';
             }
-            $content = include $snippet;
-            if(isset($data['attributes']['lot'])) {
-                $attr = Mecha::walk(explode(',', $data['attributes']['lot']), function($v) {
-                    return str_replace('&#44;', ',', $v);
-                });
-                $content = vsprintf($content, $attr);
+            if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $attr['path'])) {
+                ob_start();
+                if(isset($attr['lot'])) {
+                    $attr['lot'] = Mecha::walk(explode(',', $attr['lot']), function($v) {
+                        return Converter::strEval(str_replace('&#44;', ',', $v));
+                    });
+                } else {
+                    $attr['lot'] = array();
+                }
+                unset($attr['path']);
+                extract($attr);
+                include $snippet;
+                $content = ob_get_clean();
             }
             return $content;
         }, $content);
@@ -85,4 +105,4 @@ function do_load_snippet($content) {
 }
 
 // Allow nested snippet(s) three time(s)
-Filter::add(array('shortcode', 'shortcode', 'shortcode'), 'do_load_snippet', 1.1);
+Filter::add(array('shortcode', 'shortcode', 'shortcode'), 'do_snippet', 1.1);

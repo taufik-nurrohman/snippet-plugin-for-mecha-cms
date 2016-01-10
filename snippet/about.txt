@@ -1,5 +1,9 @@
-Snippet Plugin for Mecha CMS
-============================
+Title: Snippet
+Author: Taufik Nurrohman
+URL: http://latitudu.com
+Version: 1.0.0
+
+====
 
 > Save and load your snippet data with this plugin.
 
@@ -34,3 +38,5 @@ This _shortcode_ will load `lot\assets\__snippet\php\foo.php` file into the page
 ~~~ .no-highlight
 `{{include path="lorem-ipsum" lot="bar,baz" foo="1"}}`
 ~~~
+
+<!-- block:donate -->
