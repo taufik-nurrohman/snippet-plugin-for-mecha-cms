@@ -11,7 +11,7 @@ Config::merge('manager_menu', array(
 function do_snippet($content) {
     global $config, $speak;
     if(strpos($content, '{{') === false) return $content;
-    // Plain text => `{{print:foo}}`
+    // plain text: `{{print:foo}}`
     if(strpos($content, '{{print:') !== false || strpos($content, '{{print=') !== false) {
         $content = preg_replace_callback('#(?<!`)\{\{print[:=](.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
@@ -26,7 +26,7 @@ function do_snippet($content) {
             return $content;
         }, $content);
     }
-    // Plain text with wildcard(s) => `{{print path="foo" lot="bar,baz,qux"}}`
+    // plain text with wildcard(s): `{{print path="foo" lot="bar,baz,qux"}}`
     if(strpos($content, '{{print ') !== false) {
         $content = preg_replace_callback('#(?<!`)\{\{print\s+(.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
@@ -53,7 +53,7 @@ function do_snippet($content) {
             return $content;
         }, $content);
     }
-    // Executable code => `{{include:foo}}`
+    // executable code: `{{include:foo}}`
     if(strpos($content, '{{include:') !== false || strpos($content, '{{include=') !== false) {
         $content = preg_replace_callback('#(?<!`)\{\{include[:=](.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
@@ -70,7 +70,7 @@ function do_snippet($content) {
             return $content;
         }, $content);
     }
-    // Executable code with variable(s) => `{{include path="foo" lot="bar,baz,qux" another_var="1"}}`
+    // executable code with variable(s): `{{include path="foo" lot="bar,baz,qux" another_var="1"}}`
     if(strpos($content, '{{include ') !== false) {
         $content = preg_replace_callback('#(?<!`)\{\{include\s+(.*?)\}\}(?!`)#', function($matches) {
             $content = $matches[0];
@@ -104,5 +104,5 @@ function do_snippet($content) {
     return $content;
 }
 
-// Allow nested snippet(s) three time(s)
+// Apply `do_snippet` filter and allow nested snippet(s) three time(s)
 Filter::add(array('shortcode', 'shortcode', 'shortcode'), 'do_snippet', 1.1);
