@@ -12,13 +12,13 @@ This plugin allows you to load snippet data into the page and treat them as part
 This _shortcode_ will load `lot\assets\__snippet\txt\foo.txt` file into the page:
 
 ~~~ .no-highlight
-`{{print:foo}}`
+{{print:foo}}
 ~~~
 
 This _shortcode_ will load `lot\assets\__snippet\txt\foo.txt` file into the page then will replace `%1$s` with `bar` and `%2$s` with `baz`:
 
 ~~~ .no-highlight
-`{{print path="foo" lot="bar,baz"}}`
+{{print path="foo" lot="bar,baz"}}
 ~~~
 
 #### PHP File
@@ -26,11 +26,11 @@ This _shortcode_ will load `lot\assets\__snippet\txt\foo.txt` file into the page
 This _shortcode_ will load `lot\assets\__snippet\php\foo.php` file into the page:
 
 ~~~ .no-highlight
-`{{include:foo}}`
+{{include:foo}}
 ~~~
 
 This _shortcode_ will load `lot\assets\__snippet\php\foo.php` file into the page then will add a PHP variable named as `$lot` with a value of `array('bar', 'baz')` and `$foo` with a value of `1`:
 
 ~~~ .no-highlight
-`{{include path="lorem-ipsum" lot="bar,baz" foo="1"}}`
+{{include path="lorem-ipsum" lot="bar,baz" foo="1"}}
 ~~~
