@@ -2,7 +2,8 @@
 
 Route::accept($config->manager->slug . '/snippet', function() use($config, $speak) {
     // Add `.htaccess` file to prevent direct access
-    if( ! $htaccess = File::exist(ASSET . DS . '__snippet' . DS . '.htaccess')) {
+    $htaccess = ASSET . DS . '__snippet' . DS . '.htaccess';
+    if( ! file_exists($htaccess)) {
         File::write('deny from all')->saveTo($htaccess, 0600);
     }
     Config::set(array(

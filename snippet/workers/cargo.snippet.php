@@ -21,7 +21,7 @@
       <?php
 
       $_files = array();
-      foreach(File::open(CACHE . DS . 'snippets.recent.cache')->unserialize() as $_file) {
+      foreach(File::open(CACHE . DS . 'snippets.cache')->unserialize() as $_file) {
           $e = File::E($_file);
           if( ! file_exists(ASSET . DS . '__snippet' . DS . $e . DS . $_file)) continue;
           $_files[] = File::url($_file);
