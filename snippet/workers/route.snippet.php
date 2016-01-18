@@ -35,8 +35,8 @@ Route::post($config->manager->slug . '/snippet/ignite', function() use($config, 
         Notify::error($speak->notify_error_content_empty);
     }
     if( ! Notify::errors()) {
-        $recent = array_slice(File::open(CACHE . DS . 'snippets.cache')->unserialize(), 0, $config->per_page);
-        File::serialize(array_merge(array($_path), $recent))->saveTo(CACHE . DS . 'snippets.cache', 0600);
+        $recent = array_slice(File::open(CACHE . DS . 'plugin.snippet.cache')->unserialize(), 0, $config->per_page);
+        File::serialize(array_merge(array($_path), $recent))->saveTo(CACHE . DS . 'plugin.snippet.cache', 0600);
         $url = $config->manager->slug . '/asset/repair/file:__snippet/' . $e . '/' . File::url($_path) . '?path=' . urlencode(rtrim('__snippet/' . $e . '/' . File::D(File::url($_path)), '/'));
         File::write($request['content'])->saveTo($file, 0600);
         Notify::success(Config::speak('notify_file_created', '<code>' . $_path_ . '</code>' . ( ! isset($request['redirect']) ? ' <a class="pull-right" href="' . $config->url . '/' . $url . '" target="_blank">' . Jot::icon('pencil') . ' ' . $speak->edit . '</a>' : "")));
