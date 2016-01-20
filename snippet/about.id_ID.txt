@@ -9,9 +9,9 @@ Version: 1.0.2
 
 Plugin ini memungkinkan Anda untuk memuat berkas-berkas teks ke dalam halaman dan menganggap mereka sebagai bagian dari halaman tersebut.
 
-### Penggunaan
+#### Penggunaan
 
-#### Berkas Teks
+##### Berkas Teks
 
 Kode pintasan ini akan memuat berkas `lot\assets\__snippet\txt\foo.txt` ke dalam halaman:
 
@@ -25,7 +25,7 @@ Kode pintasan ini akan memuat berkas `lot\assets\__snippet\txt\foo.txt` ke dalam
 `{{print path="foo" lot="bar,baz"}}`
 ~~~
 
-#### Berkas PHP
+##### Berkas PHP
 
 Kode pintasan ini akan memuat berkas `lot\assets\__snippet\php\foo.php` ke dalam halaman:
 

@@ -5,9 +5,9 @@ Snippet Plugin for Mecha CMS
 
 This plugin allows you to load snippet data into the page and treat them as part of the page.
 
-### Usage
+#### Usage
 
-#### Text File
+##### Text File
 
 This _shortcode_ will load `lot\assets\__snippet\txt\foo.txt` file into the page:
 
@@ -21,7 +21,7 @@ This _shortcode_ will load `lot\assets\__snippet\txt\foo.txt` file into the page
 {{print path="foo" lot="bar,baz"}}
 ~~~
 
-#### PHP File
+##### PHP File
 
 This _shortcode_ will load `lot\assets\__snippet\php\foo.php` file into the page:
 

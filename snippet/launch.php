@@ -44,11 +44,16 @@ function do_snippet($content) {
                 return $matches[0];
             }
             $content = File::open($snippet)->read();
-            if(isset($attr['lot'])) {
-                $lot = Mecha::walk(explode(',', $attr['lot']), function($v) {
-                    return str_replace('&#44;', ',', $v);
-                });
-                $content = vsprintf($content, $lot);
+            if(isset($attr['lot']) && strpos($content, '%') !== false) {
+                // `http://stackoverflow.com/a/2053931`
+                if(preg_match_all('#%(?:(\d+)[$])?[-+]?(?:[ 0]|[\'].)?(?:[-]?\d+)?(?:[.]\d+)?[%bcdeEufFgGosxX]#', $content, $matches)) {
+                    $lot = Mecha::walk(explode(',', $attr['lot']), function($v) {
+                        return str_replace('&#44;', ',', $v);
+                    });
+                    if(count($lot) >= count(array_unique($matches[1]))) {
+                        $content = vsprintf($content, $lot);
+                    }
+                }
             }
             return $content;
         }, $content);
@@ -87,13 +92,13 @@ function do_snippet($content) {
             if($snippet = File::exist(ASSET . DS . '__snippet' . DS . $e . DS . $attr['path'])) {
                 ob_start();
                 if(isset($attr['lot'])) {
-                    $attr['lot'] = Mecha::walk(explode(',', $attr['lot']), function($v) {
+                    $lot = Mecha::walk(explode(',', $attr['lot']), function($v) {
                         return Converter::strEval(str_replace('&#44;', ',', $v));
                     });
                 } else {
-                    $attr['lot'] = array();
+                    $lot = array();
                 }
-                unset($attr['path']);
+                unset($attr['path'], $attr['lot']);
                 extract($attr);
                 include $snippet;
                 $content = ob_get_clean();
