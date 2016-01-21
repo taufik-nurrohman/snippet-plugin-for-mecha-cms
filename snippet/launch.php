@@ -46,7 +46,7 @@ function do_snippet($content) {
             $content = File::open($snippet)->read();
             if(isset($attr['lot']) && strpos($content, '%') !== false) {
                 // `http://stackoverflow.com/a/2053931`
-                if(preg_match_all('#%(?:(\d+)[$])?[-+]?(?:[ 0]|[\'].)?(?:[-]?\d+)?(?:[.]\d+)?[%bcdeEufFgGosxX]#', $content, $matches)) {
+                if(preg_match_all('#%(?:(\d+)[$])?[-+]?(?:[ 0]|[\'].)?(?:[-]?\d+)?(?:[.]\d+)?[%bcdeEfFgGosuxX]#', $content, $matches)) {
                     $lot = Mecha::walk(explode(',', $attr['lot']), function($v) {
                         return str_replace('&#44;', ',', $v);
                     });
