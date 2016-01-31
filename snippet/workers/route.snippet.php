@@ -14,7 +14,7 @@ Route::accept($config->manager->slug . '/snippet', function() use($config, $spea
 });
 
 Route::post($config->manager->slug . '/snippet/ignite', function() use($config, $speak) {
-    $request = Request::post();
+    $request = Filter::apply('request:__snippet', Request::post());
     $id = time();
     Guardian::checkToken($request['token']);
     if(trim($request['name']) === "") {
