@@ -34,7 +34,7 @@
           <?php foreach($_files as $_file): ?>
           <?php $e = File::E($_file); ?>
           <tr>
-            <td><a href="javascript:do_snippet('<?php echo str_replace('.' . $e, "", $_file); ?>', '<?php echo $e === 'php' ? 'include' : 'print'; ?>');" title="<?php echo $speak->shortcode; ?>"><?php echo Jot::icon($e === 'php' ? 'file-code-o' : 'file-o', 'fw') . ' ' . $_file; ?></a></td>
+            <td><a href="javascript:do_snippet('<?php echo str_replace('.' . $e . X, "", $_file . X); ?>', '<?php echo $e === 'php' ? 'include' : 'print'; ?>');" title="<?php echo $speak->shortcode; ?>"><?php echo Jot::icon($e === 'php' ? 'file-code-o' : 'file-o', 'fw') . ' ' . $_file; ?></a></td>
             <td class="td-icon"><?php echo Jot::a('construct', $config->manager->slug . '/asset/repair/file:__snippet/' . $e . '/' . $_file, Jot::icon('pencil'), array('title' => $speak->edit)); ?></td>
             <td class="td-icon"><?php echo Jot::a('destruct', $config->manager->slug . '/asset/kill/file:__snippet/' . $e . '/' . $_file, Jot::icon('times'), array('title' => $speak->delete)); ?></td>
           </tr>

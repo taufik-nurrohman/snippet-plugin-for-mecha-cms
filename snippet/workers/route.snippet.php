@@ -3,7 +3,7 @@
 Route::accept($config->manager->slug . '/snippet', function() use($config, $speak) {
     // Add `.htaccess` file to prevent direct access
     $htaccess = ASSET . DS . '__snippet' . DS . '.htaccess';
-    if( ! file_exists($htaccess)) {
+    if( ! File::exist($htaccess)) {
         File::write('deny from all')->saveTo($htaccess, 0600);
     }
     Config::set(array(
@@ -14,7 +14,7 @@ Route::accept($config->manager->slug . '/snippet', function() use($config, $spea
 });
 
 Route::post($config->manager->slug . '/snippet/ignite', function() use($config, $speak) {
-    $request = Filter::apply('request:__snippet', Request::post());
+    $request = Request::post();
     $id = time();
     Guardian::checkToken($request['token']);
     if(trim($request['name']) === "") {
@@ -40,7 +40,7 @@ Route::post($config->manager->slug . '/snippet/ignite', function() use($config, 
         $url = $config->manager->slug . '/asset/repair/file:__snippet/' . $e . '/' . File::url($_path) . '?path=' . urlencode(rtrim('__snippet/' . $e . '/' . File::D(File::url($_path)), '/'));
         File::write($request['content'])->saveTo($file, 0600);
         Notify::success(Config::speak('notify_file_created', '<code>' . $_path_ . '</code>' . ( ! isset($request['redirect']) ? ' <a class="pull-right" href="' . $config->url . '/' . $url . '" target="_blank">' . Jot::icon('pencil') . ' ' . $speak->edit . '</a>' : "")));
-        Notify::info('<strong>' . $speak->shortcode . ':</strong> <code>{{' . ($e === 'php' ? 'include' : 'print') . ':' . str_replace('.' . $e, "", File::url($_path)) . '}}</code>');
+        Notify::info('<strong>' . $speak->shortcode . ':</strong> <code>{{' . ($e === 'php' ? 'include' : 'print') . ':' . str_replace('.' . $e . X, "", File::url($_path) . X) . '}}</code>');
         Guardian::kick(isset($request['redirect']) ? $url : File::D($config->url_current));
     }
     Guardian::kick(File::D($config->url_current));
